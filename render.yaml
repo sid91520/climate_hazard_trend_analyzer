@@ -1,0 +1,24 @@
+# Render Blueprint for the backend. In Render: New > Blueprint > pick this repo.
+services:
+  - type: web
+    name: climate-hazard-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    # --proxy-headers makes uvicorn read the real client IP from X-Forwarded-For
+    # (set by Render's proxy), so rate limits apply per user, not per proxy.
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: ENVIRONMENT
+        value: production
+      - key: MONGODB_DB
+        value: climate_hazards
+      # Secrets / deployment-specific values: Render asks for these on first deploy.
+      - key: MONGODB_URI
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
