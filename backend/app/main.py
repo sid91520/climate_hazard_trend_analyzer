@@ -51,6 +51,12 @@ app.add_middleware(
 app.include_router(router)
 
 
+@app.get("/", include_in_schema=False)
+async def root() -> dict[str, str]:
+    """Opening the bare service URL should point somewhere useful, not 404."""
+    return {"service": "Climate Hazard Trend Analyzer API", "health": "/api/health", "docs": "/docs"}
+
+
 # ------------------------------------------------------------ error handlers
 # Every error leaves the API in the same shape: {"error": {"code": ..., "message": ...}}
 

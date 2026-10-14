@@ -63,6 +63,12 @@ def test_health():
     assert response.json()["status"] == "ok"
 
 
+def test_root_points_to_health_and_docs():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json()["health"] == "/api/health"
+
+
 def test_cors_origins_are_split_and_trimmed():
     settings = Settings(cors_origins="https://a.example, http://localhost:3000 ,")
     assert settings.cors_origin_list == ["https://a.example", "http://localhost:3000"]
